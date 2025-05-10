@@ -270,7 +270,8 @@ services:
 
 插件包含：右侧标题栏、字数统计、emoji 解析、图片缩放、代码复制、自定义左上角 logo + 标题
 
-![image.png](https://minio.916337.xyz:443/images/20250509220416.png)
+![image](https://github.com/user-attachments/assets/081fb389-cca2-498a-a079-02f5ce1c262e)
+
 
 ## 同步远程 Git 仓库实现远程修改
 
