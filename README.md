@@ -34,7 +34,7 @@
 ├── generate-sidebar.js     # Node.js 脚本，用于生成 _sidebar.md
 ├── listener.js             # Node.js 脚本，Webhook 监听服务
 ├── index.html              # Docsify 主 HTML 文件和配置
-├── _sidebar.md             # Docsify 侧边栏文件 (通常由 generate-sidebar.js 生成)
+├── _sidebar.md             # Docsify 侧边栏文件 (由 generate-sidebar.js 生成)
 ├── README.md               # 本 README 文件
 └── icon.svg                # 站点图标
 ```
@@ -43,8 +43,15 @@
 
 ### 1. 构建 Docker 镜像
 
+> 因为本地网络问题无法获取到源镜像`stilleshan/docsify`的元数据，所以将dockerhub同步到github的ghcr仓库以继续进行(`ghcr.io/sqing33/docsify-stilleshan`)
+同步过程参考：https://github.com/sqing33/docker-image-sync
+
 ```bash
-docker build -t your-docsify-image .
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t sqing33/docsify:latest \
+  -t ghcr.io/sqing33/docsify:latest \
+  --push .
 ```
 
 ### 2. 运行 Docker 容器
