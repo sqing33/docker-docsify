@@ -44,7 +44,12 @@
 ### 1. 构建 Docker 镜像
 
 > 因为本地网络问题无法获取到源镜像`stilleshan/docsify`的元数据，所以将dockerhub同步到github的ghcr仓库以继续进行(`ghcr.io/sqing33/docsify-stilleshan`)
-同步过程参考：https://github.com/sqing33/docker-image-sync
+
+> 同步过程：https://github.com/sqing33/docker-image-sync
+
+> 构建项目：https://github.com/sqing33/docker-docsify
+
+> DockerHub：https://hub.docker.com/r/sqing33/docsify
 
 ```bash
 docker buildx build \
