@@ -18,13 +18,27 @@ const excludeList = [
     'git_listen',      // 排除 git listen 文件夹 (注意这里的名字需要匹配实际目录名)
 ];
 
+// 提取文件名中的数字前缀
+function extractNumberPrefix(filename) {
+    const match = filename.match(/^(\d+)\./);
+    return match ? parseInt(match[1], 10) : Infinity; // 如果没有数字前缀，返回无穷大，使其排在后面
+}
+
 function buildSidebar(currentDir, level) {
   const items = fs.readdirSync(currentDir);
 
-  // 对items进行排序，让侧边栏顺序更可控，例如按字母排序
-  // 确保排序时不区分大小写，并处理中文等非英文字符（如果需要更复杂的排序）
-  items.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-
+  // 修改排序算法，先按数字前缀排序，再按字母顺序排序
+  items.sort((a, b) => {
+    const numA = extractNumberPrefix(a);
+    const numB = extractNumberPrefix(b);
+    
+    if (numA !== numB) {
+      return numA - numB; // 按数字排序
+    }
+    
+    // 如果数字相同或都没有数字，按字母顺序排序
+    return a.localeCompare(b, undefined, { sensitivity: 'base' });
+  });
 
   items.forEach(item => {
     // 在处理前检查是否在排除列表中
@@ -54,11 +68,8 @@ function buildSidebar(currentDir, level) {
        }
 
       const linkPath = path.relative(docsDir, itemPath).replace(/\\/g, '/'); // 确保路径使用正斜杠
-      // 可选：美化链接文本，例如将 "Docker安装+Dockerfile构建" 转为 "Docker 安装 + Dockerfile 构建"
-      // 可以使用更复杂的替换规则，这里保持原样
-      // const displayFileName = fileNameWithoutExt.replace(/[+-]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
-      // sidebarContent += `${indent}* [${displayFileName}](${linkPath})\n`;
-      sidebarContent += `${indent}* [${fileNameWithoutExt}](${linkPath})\n`; // 使用原始文件名作为链接文本
+	  const displayFileName = fileNameWithoutExt.replace(/^(\d+\.)/, '$1 '); // 在数字前缀后添加空格
+      sidebarContent += `${indent}* [${displayFileName}](${linkPath})\n`; // 使用原始文件名作为链接文本
     }
   });
 }
@@ -69,7 +80,6 @@ buildSidebar(docsDir, 0);
 // 在顶部添加一个指向根目录（README.md 或 index.html）的链接
 // 这通常是 Docsify 侧边栏的第一项
 sidebarContent = `* [首页](/)\n` + sidebarContent;
-
 
 // 写入 _sidebar.md 文件
 fs.writeFileSync(sidebarFile, sidebarContent);
