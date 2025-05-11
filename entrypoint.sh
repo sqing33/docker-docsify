@@ -17,11 +17,37 @@ mkdir -p "$LISTENER_DIR"
 mkdir -p "${DOCS_DIR}/_media" # 确保 _media 目录存在
 
 echo "从 ${TMP_DOCS_BUILD} 复制 listener.js 到 ${LISTENER_DIR}"
-cp "${TMP_DOCS_BUILD}/listener.js" "${LISTENER_DIR}/listener.js"
-chmod +x "${LISTENER_DIR}/listener.js"
+
+# 检查目标目录是否存在
+if [ ! -d "${LISTENER_DIR}" ]; then
+  echo "目录 ${LISTENER_DIR} 不存在，创建它..."
+  mkdir -p "${LISTENER_DIR}"
+fi
+
+# 检查目标文件是否存在
+if [ ! -f "${LISTENER_DIR}/listener.js" ]; then
+  cp "${TMP_DOCS_BUILD}/listener.js" "${LISTENER_DIR}/listener.js"
+  chmod +x "${LISTENER_DIR}/listener.js"
+  echo "已复制 listener.js 到 ${LISTENER_DIR}"
+else
+  echo "文件 ${LISTENER_DIR}/listener.js 已存在，跳过复制。"
+fi
 
 echo "从 ${TMP_DOCS_BUILD} 复制 icon.svg 到 ${DOCS_DIR}/_media/"
-cp "${TMP_DOCS_BUILD}/icon.svg" "${DOCS_DIR}/_media/icon.svg"
+
+# 检查目标目录是否存在
+if [ ! -d "${DOCS_DIR}/_media" ]; then
+  echo "目录 ${DOCS_DIR}/_media 不存在，创建它..."
+  mkdir -p "${DOCS_DIR}/_media"
+fi
+
+# 检查目标文件是否存在
+if [ ! -f "${DOCS_DIR}/_media/icon.svg" ]; then
+  cp "${TMP_DOCS_BUILD}/icon.svg" "${DOCS_DIR}/_media/icon.svg"
+  echo "已复制 icon.svg 到 ${DOCS_DIR}/_media/"
+else
+  echo "文件 ${DOCS_DIR}/_media/icon.svg 已存在，跳过复制。"
+fi
 
 echo "进入 ${LISTENER_DIR} 并安装 npm 依赖..."
 cd "$LISTENER_DIR"
